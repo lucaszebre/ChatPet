@@ -1,0 +1,19 @@
+{
+  "dragDropText": "Drag & drop files here, or click to select",
+  "dragActiveText": "Drop your files here",
+  "supportsText": "Supports",
+  "maxSizeText": "Max size",
+  "uploadedFilesTitle": "Uploaded Files:",
+  "removeFileAlt": "Remove file",
+  "fileSizes": {
+    "bytes": "Bytes",
+    "kb": "KB", 
+    "mb": "MB",
+    "gb": "GB"
+  },
+  "errors": {
+    "fileTooLarge": "File is too large",
+    "fileInvalidType": "File type not supported",
+    "tooManyFiles": "Too many files selected"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Hello {{username}}, how can I help you with pets 🐕?",
+  "cardContent": "Card Content",
+  "thinking": "Thinking...",
+
+  "categories": {
+    "lifestyle": "Finding the Right Pet",
+    "preferences": "Pet Breeds & Types",
+    "care": "Pet Care & Training"
+  },
+  "questions": {
+    "lifestyle": {
+      "living": "Which pets are best suited for apartment living?",
+      "time": "What pets are good for someone working full-time?",
+      "activity": "Can you recommend low-maintenance pets for beginners?",
+      "household": "Which pets are safe to have around small children?"
+    },
+    "preferences": {
+      "type": "What are the most affectionate cat breeds?",
+      "size": "What are good small dog breeds for small homes?",
+      "age": "Should I adopt a puppy or an adult dog?",
+      "energy": "What are the calmest dog breeds for seniors?"
+    },
+    "care": {
+      "experience": "What's the easiest pet to take care of for beginners?",
+      "training": "How can I train my new puppy basic commands?",
+      "health": "What are common health issues in golden retrievers?",
+      "grooming": "How often should I groom my long-haired cat?"
+    }
+  }
+}

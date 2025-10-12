@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "public"."Chat" ADD COLUMN     "name" TEXT NOT NULL DEFAULT '',
+ALTER COLUMN "updateAt" SET DEFAULT CURRENT_TIMESTAMP;

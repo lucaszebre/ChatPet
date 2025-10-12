@@ -1,0 +1,19 @@
+{
+  "dragDropText": "Glissez-déposez vos fichiers ici, ou cliquez pour sélectionner",
+  "dragActiveText": "Déposez vos fichiers ici",
+  "supportsText": "Supports",
+  "maxSizeText": "Taille max",
+  "uploadedFilesTitle": "Fichiers téléchargés :",
+  "removeFileAlt": "Supprimer le fichier",
+  "fileSizes": {
+    "bytes": "Octets",
+    "kb": "Ko", 
+    "mb": "Mo",
+    "gb": "Go"
+  },
+  "errors": {
+    "fileTooLarge": "Le fichier est trop volumineux",
+    "fileInvalidType": "Type de fichier non supporté",
+    "tooManyFiles": "Trop de fichiers sélectionnés"
+  }
+}

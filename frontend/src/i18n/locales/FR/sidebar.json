@@ -1,0 +1,17 @@
+{
+  "sidebar": {
+    "title": "ChatPet",
+    "newChat": "Nouveau Chat",
+    "recentDiscussion": "Discussion Récente",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "languageToggle": "Anglais",
+    "searchThreads": "Rechercher des Fils",
+    "deleteThread": {
+      "title": "Êtes-vous sûr de vouloir supprimer ce fil {{threadName}} ?",
+      "description": "Cette action ne peut pas être annulée. Tous les messages de ce fil seront définitivement supprimés.",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    }
+  }
+}

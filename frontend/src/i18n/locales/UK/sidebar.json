@@ -1,0 +1,17 @@
+{
+  "sidebar": {
+    "title": "ChatPet",
+    "newChat": "New Chat",
+    "recentDiscussion": "Recent Discussion",
+    "login": "Login",
+    "logout": "Logout",
+    "languageToggle": "French",
+    "searchThreads": "Search Threads",
+    "deleteThread": {
+      "title": "Are you sure you want to delete this thread {{threadName}}?",
+      "description": "This action cannot be undone. All messages in this thread will be permanently deleted.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "copyMessage": "Copier le message",
+  "messageCopied": "Message copié !",
+  "writeMessageFirst": "Veuillez écrire un message d'abord",
+  "placeholder": "Tapez votre message ici...",
+  "uploadImage": "Télécharger une image",
+  "uploadDescription": "Sélectionnez un fichier image à télécharger et analyser.",
+  "fileUploaded": "Fichier téléchargé :",
+  "editSystemPrompt": "Modifier les instruction du système",
+  "systemPromptTitle": "Instructions système",
+  "newThread": "Nouvelle conversation",
+  "cancel": "Annuler",
+  "submit": "Envoyer",
+  "enableEdit": "Activer l'édition",
+  "disableEdit": "Désactiver l'édition"
+}

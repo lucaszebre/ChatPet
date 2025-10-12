@@ -1,0 +1,16 @@
+{
+  "copyMessage": "Copy message",
+  "messageCopied": "Message copied!",
+  "writeMessageFirst": "Please write a message first",
+  "placeholder": "Type your message here...",
+  "uploadImage": "Upload Image",
+  "uploadDescription": "Select an image file to upload and analyze.",
+  "fileUploaded": "File uploaded:",
+  "editSystemPrompt": "Edit system prompt",
+  "systemPromptTitle": "System prompt",
+  "newThread": "New Thread",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "enableEdit": "Enable Edit",
+  "disableEdit": "Disable Edit"
+}

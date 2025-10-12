@@ -1,0 +1,31 @@
+{
+  "title": "Bonjour {{username}}, comment puis-je vous aider avec les animaux 🐕?",
+  "cardContent": "Contenu de la carte",
+  "thinking": "Réflexion...",
+
+  "categories": {
+    "lifestyle": "Trouver le Bon Animal",
+    "preferences": "Races & Types",
+    "care": "Soins & Éducation"
+  },
+  "questions": {
+    "lifestyle": {
+      "living": "Quels animaux sont adaptés à la vie en appartement ?",
+      "time": "Quels animaux conviennent à quelqu'un qui travaille toute la journée ?",
+      "activity": "Pouvez-vous recommander des animaux faciles à entretenir pour débutants ?",
+      "household": "Quels animaux sont sans danger pour les jeunes enfants ?"
+    },
+    "preferences": {
+      "type": "Quelles sont les races de chats les plus affectueuses ?",
+      "size": "Quelles sont les bonnes races de petits chiens pour petits espaces ?",
+      "age": "Dois-je adopter un chiot ou un chien adulte ?",
+      "energy": "Quelles sont les races de chiens les plus calmes pour les seniors ?"
+    },
+    "care": {
+      "experience": "Quel est l'animal le plus facile à gérer pour les débutants ?",
+      "training": "Comment apprendre les commandes de base à mon chiot ?",
+      "health": "Quels sont les problèmes de santé courants chez les golden retrievers ?",
+      "grooming": "À quelle fréquence dois-je toiletter mon chat à poils longs ?"
+    }
+  }
+}
