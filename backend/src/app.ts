@@ -117,6 +117,8 @@ app.get("/session", async (c) => {
   });
 });
 
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+
 configureOpenAPI(app);
 
 const routes = [user, chat] as const;
