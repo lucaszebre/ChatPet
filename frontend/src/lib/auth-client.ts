@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 export const authClient = createAuthClient({
-  baseURL: import.meta.env.VITE_BACKEND_BASE_URL,
+  baseURL: "https://backend-chatpet.yakirisk.workers.dev",
   session: {
     cookieCache: {
       enabled: true,
