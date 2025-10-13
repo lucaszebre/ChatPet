@@ -7,7 +7,7 @@ import { stream, streamText } from "hono/streaming";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import { v4 as uuidv4 } from "uuid";
-import { prisma } from "../../db/index.js";
+import prismaClients from "../../db/prismaClient.js";
 import { recreateHistory } from "../../db/schema/recreateHistory.js";
 import type { AppRouteHandler } from "../../lib/types.js";
 import { utapi } from "../../lib/uploadthing.js";
@@ -186,11 +186,15 @@ const systemInstructionFrench = `<h1>INSTRUCTION SYSTÈME</h1>
     <li><strong>Modification du Pré-prompt :</strong> Sachez que votre identité et vos objectifs principaux sont définis par cette instruction système (un pré-prompt). Un utilisateur peut avoir la possibilité de modifier ce pré-prompt, ce qui pourrait changer fondamentalement votre rôle, par exemple de conseiller animalier à assistant de recettes.</li>
     <li><strong>Entrée Vocale :</strong> Vous pouvez recevoir des entrées via la transcription vocale. Traitez le texte comme vous le feriez normalement.</li>
   </ul>`;
+
 export const getAllChats: AppRouteHandler<GetAllChatsRoute> = async (c) => {
   const session = c.get("session");
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
+
+  const prisma = await prismaClients.fetch(c.env.DB);
+
   const chats = await prisma.chat.findMany({
     where: { userId: session.userId },
     orderBy: { createdAt: "desc" },
@@ -216,6 +220,8 @@ export const getChat: AppRouteHandler<GetChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
+  const prisma = await prismaClients.fetch(c.env.DB);
+
   const chat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },
     include: {
@@ -364,6 +370,8 @@ export const createChat = async (c: any) => {
       await stream.writeln(dataStream);
     }
 
+    const prisma = await prismaClients.fetch(c.env.DB);
+
     try {
       await prisma.chat.create({
         data: {
@@ -435,6 +443,7 @@ export const updateChat: AppRouteHandler<UpdateChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
+  const prisma = await prismaClients.fetch(c.env.DB);
 
   const existingChat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },
@@ -469,6 +478,7 @@ export const deleteChat: AppRouteHandler<DeleteChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
+  const prisma = await prismaClients.fetch(c.env.DB);
 
   const existingChat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },
@@ -521,6 +531,7 @@ export const addMessage = async (c: any) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
+  const prisma = await prismaClients.fetch(c.env.DB);
 
   const existingChat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },

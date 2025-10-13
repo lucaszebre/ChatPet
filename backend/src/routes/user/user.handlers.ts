@@ -1,13 +1,14 @@
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
 
-import { prisma } from "../../db/index.js";
+import prismaClients from "../../db/prismaClient.js";
 import { ZOD_ERROR_CODES, ZOD_ERROR_MESSAGES } from "../../lib/constants.js";
 import type { AppRouteHandler } from "../../lib/types.js";
 import type { GetOneRoute, PatchRoute } from "./user.routes.js";
 
 export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
   const session = c.get("session");
+  const prisma = await prismaClients.fetch(c.env.DB);
 
   const user = await prisma.user.findFirst({
     where: {
@@ -59,6 +60,8 @@ export const patch: AppRouteHandler<PatchRoute> = async (c) => {
       HttpStatusCodes.UNPROCESSABLE_ENTITY
     );
   }
+
+  const prisma = await prismaClients.fetch(c.env.DB);
 
   const updatedUser = await prisma.user.update({
     where: { id: session?.userId! },
