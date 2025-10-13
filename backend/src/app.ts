@@ -9,6 +9,16 @@ import { user } from "./routes/user/user.index.js";
 
 const app = createApp();
 
+app.use("*", async (c, next) => {
+  console.log(`[${c.req.method}] ${c.req.url}`);
+  await next();
+});
+
+app.onError((err, c) => {
+  console.error("Worker threw exception:", err);
+  return c.json({ message: "Internal Server Error" }, 500);
+});
+
 app.use(
   "*", // or replace with "*" to enable cors for all routes
   cors({
