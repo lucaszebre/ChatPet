@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 export const authClient = createAuthClient({
-  baseURL: process.env.VITE_BACKEND_BASE_URL,
+  baseURL: import.meta.env.VITE_BACKEND_BASE_URL,
   session: {
     cookieCache: {
       enabled: true,
