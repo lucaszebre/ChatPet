@@ -103,6 +103,8 @@ app.use("/api/private/*", async (c, next) => {
   return next();
 });
 
+app.get("/", (c) => c.text("Welcome to ChatPet API!"));
+
 app.get("/session", async (c) => {
   const session = c.get("session");
   const user = c.get("user");

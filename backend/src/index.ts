@@ -4,10 +4,6 @@ import { auth } from "./routes/auth/auth.js";
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
-app.get("/", (c) => {
-  return c.text("welcome to the chat pet backend");
-});
-
 serve(
   {
     fetch: app.fetch,
