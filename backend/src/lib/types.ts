@@ -26,7 +26,7 @@ export interface AppBindings {
     TRUSTED_ORIGIN: string;
     LOG_LEVEL: string;
     VITE_BACKEND_BASE_URL: string;
-    DB: string;
+    DB: D1Database;
   };
 
   Variables: {
