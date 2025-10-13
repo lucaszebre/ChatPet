@@ -24,5 +24,13 @@
     "VITE_BACKEND_BASE_URL": "http://localhost:5000",
     "AUTH_URL": "http://localhost:5000/api/auth",
     "BETTER_AUTH_URL": "http://localhost:5000"
+  },
+  "observability": {
+    "logs": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    }
   }
 }
