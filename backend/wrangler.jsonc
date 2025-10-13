@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "backend-chatpet",
+  "main": "src/index.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2025-10-13",
+  "dev": {
+    "port": 5000,
+    "local_protocol": "http"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "Kanban",
+      "database_id": "ea3f8fcd-6604-4ad2-a998-302718ef649c"
+    }
+  ],
+  "vars": {
+    "HOST": "localhost",
+    "SERVER_PORT": "5000",
+    "REDIRECT_PROXY_URL": "http://localhost:5173/",
+    "TRUSTED_ORIGIN": "http://localhost:5173",
+    "LOG_LEVEL": "debug",
+    "VITE_BACKEND_BASE_URL": "http://localhost:5000",
+    "AUTH_URL": "http://localhost:5000/api/auth",
+    "BETTER_AUTH_URL": "http://localhost:5000"
+  }
+}
