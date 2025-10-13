@@ -7,8 +7,8 @@ import { stream, streamText } from "hono/streaming";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import { v4 as uuidv4 } from "uuid";
-import prismaClients from "../../db/prismaClient.js";
 import { recreateHistory } from "../../db/schema/recreateHistory.js";
+import { getPrisma } from "../../lib/db.js";
 import type { AppRouteHandler } from "../../lib/types.js";
 import { utapi } from "../../lib/uploadthing.js";
 import type {
@@ -193,7 +193,7 @@ export const getAllChats: AppRouteHandler<GetAllChatsRoute> = async (c) => {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
 
-  const prisma = await prismaClients.fetch(c.env.DB);
+  const prisma = getPrisma(c.env.DB);
 
   const chats = await prisma.chat.findMany({
     where: { userId: session.userId },
@@ -220,7 +220,7 @@ export const getChat: AppRouteHandler<GetChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = await prismaClients.fetch(c.env.DB);
+  const prisma = getPrisma(c.env.DB);
 
   const chat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },
@@ -370,7 +370,7 @@ export const createChat = async (c: any) => {
       await stream.writeln(dataStream);
     }
 
-    const prisma = await prismaClients.fetch(c.env.DB);
+    const prisma = getPrisma(c.env.DB);
 
     try {
       await prisma.chat.create({
@@ -443,7 +443,7 @@ export const updateChat: AppRouteHandler<UpdateChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = await prismaClients.fetch(c.env.DB);
+  const prisma = getPrisma(c.env.DB);
 
   const existingChat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },
@@ -478,7 +478,7 @@ export const deleteChat: AppRouteHandler<DeleteChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = await prismaClients.fetch(c.env.DB);
+  const prisma = getPrisma(c.env.DB);
 
   const existingChat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },
@@ -531,7 +531,7 @@ export const addMessage = async (c: any) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = await prismaClients.fetch(c.env.DB);
+  const prisma = getPrisma(c.env.DB);
 
   const existingChat = await prisma.chat.findFirst({
     where: { id, userId: session.userId },

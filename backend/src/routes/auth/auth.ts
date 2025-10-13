@@ -1,8 +1,8 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { jwt } from "better-auth/plugins";
-import { prisma } from "../../db/index.js";
-
+import { getPrisma } from "../../lib/db";
+const prisma = getPrisma(process.env.DB as string);
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
