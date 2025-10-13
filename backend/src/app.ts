@@ -1,7 +1,6 @@
 import { cors } from "hono/cors";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
-import env from "./env.js";
 import configureOpenAPI from "./lib/configure-open-api.js";
 import createApp from "./lib/create-app.js";
 import { auth } from "./routes/auth/auth.js";
@@ -13,7 +12,7 @@ const app = createApp();
 app.use(
   "*", // or replace with "*" to enable cors for all routes
   cors({
-    origin: [env.TRUSTED_ORIGIN], // Your client's origin
+    origin: (_, c) => c.env.TRUSTED_ORIGIN, // Your client's origin
     allowHeaders: [
       "Content-Type",
       "Authorization",
@@ -39,7 +38,7 @@ app.use(
 app.use(
   "/api/private/*", // or replace with "*" to enable cors for all routes
   cors({
-    origin: [env.TRUSTED_ORIGIN], // Your client's origin
+    origin: (_, c) => c.env.TRUSTED_ORIGIN, // Your client's origin
     allowHeaders: [
       "Content-Type",
       "Authorization",
