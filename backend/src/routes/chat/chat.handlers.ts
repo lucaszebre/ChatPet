@@ -9,7 +9,6 @@ import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import { v4 as uuidv4 } from "uuid";
 import prismaClients from "../../db/prismaClient.js";
 import { recreateHistory } from "../../db/schema/recreateHistory.js";
-import env from "../../env.js";
 import type { AppRouteHandler } from "../../lib/types.js";
 import { utapi } from "../../lib/uploadthing.js";
 import type {
@@ -34,7 +33,7 @@ export type ChatType = {
   histories?: ChatMessage[];
 };
 
-const ai = new GoogleGenAI({ apiKey: env.GOOGLE_AI_API_KEY || "" });
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_API_KEY || "" });
 
 const systemInstructionEnglish = `<h1>SYSTEM INSTRUCTION</h1>
 

@@ -3,8 +3,6 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { jwt } from "better-auth/plugins";
 import { prisma } from "../../db/index.js";
 
-import env from "../../env.js";
-
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -12,15 +10,15 @@ export const auth = betterAuth({
   plugins: [jwt()],
   socialProviders: {
     github: {
-      clientId: env.AUTH_GITHUB_ID,
-      clientSecret: env.AUTH_GITHUB_SECRET,
+      clientId: process.env.AUTH_GITHUB_ID as string,
+      clientSecret: process.env.AUTH_GITHUB_SECRET as string,
     },
     google: {
-      clientId: env.AUTH_GOOGLE_ID as string,
-      clientSecret: env.AUTH_GOOGLE_SECRET as string,
+      clientId: process.env.AUTH_GOOGLE_ID as string,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
     },
   },
-  trustedOrigins: [env.TRUSTED_ORIGIN],
+  trustedOrigins: [process.env.TRUSTED_ORIGIN as string],
   logger: {
     level: "debug",
   },

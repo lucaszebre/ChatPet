@@ -10,9 +10,9 @@
   },
   "d1_databases": [
     {
-      "binding": "DB",
-      "database_name": "Kanban",
-      "database_id": "ea3f8fcd-6604-4ad2-a998-302718ef649c"
+      "binding": "chatpet_d1",
+      "database_name": "chatpet-d1",
+      "database_id": "d612319a-51e0-45bb-a51f-63a6be97f92b"
     }
   ],
   "vars": {
