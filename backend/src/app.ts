@@ -3,11 +3,14 @@ import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import configureOpenAPI from "./lib/configure-open-api.js";
 import createApp from "./lib/create-app.js";
+import { pinoLogger } from "./middleware/pino-logger.js";
 import { auth } from "./routes/auth/auth.js";
 import { chat } from "./routes/chat/chat.index.js";
 import { user } from "./routes/user/user.index.js";
 
 const app = createApp();
+
+app.use("*", pinoLogger());
 
 app.use(
   "*", // or replace with "*" to enable cors for all routes
@@ -91,6 +94,14 @@ app.use("/api/private/*", async (c, next) => {
   }
 
   return next();
+});
+
+app.onError((err, c) => {
+  const logger = c.get("logger");
+  if (logger) {
+    logger.error(`Worker threw exception: ${err.message}`, err);
+  }
+  return c.json({ message: "Internal Server Error" }, 500);
 });
 
 app.get("/session", async (c) => {
