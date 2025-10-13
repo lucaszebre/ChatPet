@@ -1,10 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  integer,
-  sqliteTable,
-  text,
-  primaryKey,
-} from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { usersTable } from "./user";
 
 export const sessionsTable = sqliteTable("session", {

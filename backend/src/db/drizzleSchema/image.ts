@@ -1,10 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  integer,
-  sqliteTable,
-  text,
-  primaryKey,
-} from "drizzle-orm/sqlite-core";
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { messagesTable } from "./message";
 
 export const imagesTable = sqliteTable("image", {
