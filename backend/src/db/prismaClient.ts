@@ -1,5 +1,5 @@
 import { PrismaD1 } from "@prisma/adapter-d1";
-import { PrismaClient } from "../generated/prisma/edge.js";
+import { PrismaClient } from "../generated/prisma";
 
 const prismaClients = {
   async fetch(db: D1Database) {
