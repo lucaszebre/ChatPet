@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "backend-chatpet",
-  "main": "src/index.ts",
+  "main": "src/app.ts",
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-10-13",
   "dev": {
