@@ -5,7 +5,7 @@ import { getPrisma } from "../../lib/db";
 const prisma = getPrisma(process.env.DB as string);
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql",
+    provider: "sqlite",
   }),
   plugins: [jwt()],
   socialProviders: {
