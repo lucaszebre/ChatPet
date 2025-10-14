@@ -5,8 +5,36 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1760391387811,
-      "tag": "0000_open_wild_child",
+      "when": 1760433169431,
+      "tag": "0000_tiny_vermin",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1760436167362,
+      "tag": "0001_damp_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1760436408895,
+      "tag": "0002_aberrant_black_crow",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1760437924534,
+      "tag": "0003_sparkling_meteorite",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1760439265919,
+      "tag": "0004_flippant_doomsday",
       "breakpoints": true
     }
   ]

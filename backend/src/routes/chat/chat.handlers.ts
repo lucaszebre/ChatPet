@@ -3,12 +3,15 @@ import {
   GoogleGenAI,
   type File as File_2,
 } from "@google/genai";
+import { env } from "cloudflare:workers";
+import { and, asc, desc, eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/d1";
 import { stream, streamText } from "hono/streaming";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import { v4 as uuidv4 } from "uuid";
+import * as schema from "../../db/drizzleSchema";
 import { recreateHistory } from "../../db/schema/recreateHistory.js";
-import { getPrisma } from "../../lib/db.js";
 import type { AppRouteHandler } from "../../lib/types.js";
 import { utapi } from "../../lib/uploadthing.js";
 import type {
@@ -17,7 +20,6 @@ import type {
   GetChatRoute,
   UpdateChatRoute,
 } from "./chat.routes.js";
-
 export type ChatMessage = {
   role: "user" | "model";
   parts: { text: string }[];
@@ -193,16 +195,17 @@ export const getAllChats: AppRouteHandler<GetAllChatsRoute> = async (c) => {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
 
-  const prisma = getPrisma(c.env.DB);
+  const db = drizzle(env.chatpet_d1, { schema });
 
-  const chats = await prisma.chat.findMany({
-    where: { userId: session.userId },
-    orderBy: { createdAt: "desc" },
-    include: {
+  const chats = await db.query.chatsTable.findMany({
+    where: eq(schema.chatsTable.userId, session.userId),
+    orderBy: desc(schema.chatsTable.createdAt),
+    with: {
       histories: {
-        include: {
+        orderBy: asc(schema.messagesTable.createdAt),
+        with: {
           image: {
-            include: {
+            with: {
               message: true,
             },
           },
@@ -220,18 +223,19 @@ export const getChat: AppRouteHandler<GetChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = getPrisma(c.env.DB);
+  const db = drizzle(env.chatpet_d1, { schema });
 
-  const chat = await prisma.chat.findFirst({
-    where: { id, userId: session.userId },
-    include: {
+  const chat = await db.query.chatsTable.findFirst({
+    where: eq(schema.chatsTable.id, id),
+    with: {
       histories: {
-        include: {
+        with: {
           image: true,
         },
       },
     },
   });
+
   if (!chat) {
     return c.json(
       { message: HttpStatusPhrases.NOT_FOUND },
@@ -250,12 +254,12 @@ export const createChat = async (c: any) => {
   const body = await c.req.parseBody();
 
   const id = body["id"];
-  const message = body["content"];
+  const messageContent = body["content"];
 
   const image = body["image"];
   const lang = body["lang"];
 
-  if (!message) {
+  if (!messageContent) {
     return c.json({ message: "We need message" }, HttpStatusCodes.BAD_REQUEST);
   }
 
@@ -274,7 +278,7 @@ export const createChat = async (c: any) => {
 
   const sumUp = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Summarize this message in maximum 4 words, keeping the same language as the input message. Provide the output as a JSON object with a single key named 'summary': ${message}`,
+    contents: `Summarize this message in maximum 4 words, keeping the same language as the input message. Provide the output as a JSON object with a single key named 'summary': ${messageContent}`,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -298,7 +302,7 @@ export const createChat = async (c: any) => {
   let myFile: File_2;
   if (!image) {
     chatResponseStream = await chat.sendMessageStream({
-      message,
+      message: messageContent,
     });
   } else {
     if (image instanceof Array) {
@@ -341,7 +345,7 @@ export const createChat = async (c: any) => {
 
     chatResponseStream = await chat.sendMessageStream({
       message: [
-        { text: message },
+        { text: messageContent },
         {
           fileData: {
             displayName: myFile.displayName,
@@ -370,19 +374,17 @@ export const createChat = async (c: any) => {
       await stream.writeln(dataStream);
     }
 
-    const prisma = getPrisma(c.env.DB);
+    const db = drizzle(env.chatpet_d1, { schema });
 
     try {
-      await prisma.chat.create({
-        data: {
-          id,
-          userId: session.userId,
-          createdAt: new Date(),
-          updateAt: new Date(),
-          name: summary,
-          systemPrompt:
-            lang === "EN" ? systemInstructionEnglish : systemInstructionFrench,
-        },
+      await db.insert(schema.chatsTable).values({
+        id,
+        userId: session.userId,
+        createdAt: new Date(),
+        updateAt: new Date(),
+        name: summary,
+        systemPrompt:
+          lang === "EN" ? systemInstructionEnglish : systemInstructionFrench,
       });
 
       if (image) {
@@ -397,38 +399,46 @@ export const createChat = async (c: any) => {
 
         const key = data.key;
 
-        await prisma.message.create({
-          data: {
+        const messageArr = await db
+          .insert(schema.messagesTable)
+          .values({
             chatId: id,
-            content: message,
+            content: messageContent,
             role: "USER",
-            image: {
-              create: {
-                url: data.ufsUrl,
-                key: key,
-                name: data.name,
-                mimeType: myFile.mimeType ?? "",
-                expirationTime: "",
-                sizeBytes: myFile.sizeBytes ?? "",
-                displayName: myFile.displayName ?? "",
-                fileUri: myFile.uri ?? "",
-              },
-            },
-          },
+          })
+          .returning();
+
+        const message = messageArr[0];
+
+        await db.insert(schema.imagesTable).values({
+          url: data.ufsUrl,
+          key: key,
+          name: data.name,
+          mimeType: myFile.mimeType ?? "",
+          expirationTime: "",
+          sizeBytes: myFile.sizeBytes ?? "",
+          displayName: myFile.displayName ?? "",
+          fileUri: myFile.uri ?? "",
+          messageId: message.id,
         });
       } else {
-        await prisma.message.create({
-          data: {
+        console.log(messageContent, "messageContent");
+        console.log(fullResponse, "fullResponse");
+        await db.batch([
+          db.insert(schema.messagesTable).values({
+            id: uuidv4(),
             chatId: id,
-            content: message,
+            content: messageContent,
             role: "USER",
-          },
-        });
+          }),
+          db.insert(schema.messagesTable).values({
+            id: uuidv4(),
+            chatId: id,
+            content: fullResponse,
+            role: "MODEL",
+          }),
+        ]);
       }
-
-      await prisma.message.create({
-        data: { chatId: id, content: fullResponse, role: "MODEL" },
-      });
     } catch (error) {
       console.error("Failed to save chat to database:", error);
     }
@@ -443,10 +453,10 @@ export const updateChat: AppRouteHandler<UpdateChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = getPrisma(c.env.DB);
+  const db = drizzle(env.chatpet_d1, { schema });
 
-  const existingChat = await prisma.chat.findFirst({
-    where: { id, userId: session.userId },
+  const existingChat = await db.query.chatsTable.findFirst({
+    where: eq(schema.chatsTable.id, id),
   });
 
   if (!existingChat) {
@@ -455,13 +465,19 @@ export const updateChat: AppRouteHandler<UpdateChatRoute> = async (c) => {
       HttpStatusCodes.NOT_FOUND
     );
   }
+  await db
+    .update(schema.chatsTable)
+    .set({
+      ...updates,
+      updateAt: new Date(),
+    })
+    .where(eq(schema.chatsTable.id, id));
 
-  const updatedChat = await prisma.chat.update({
-    where: { id },
-    data: { ...updates, updateAt: new Date() },
-    include: {
+  const updatedChat = await db.query.chatsTable.findFirst({
+    where: eq(schema.chatsTable.id, id),
+    with: {
       histories: {
-        include: {
+        with: {
           image: true,
         },
       },
@@ -478,13 +494,16 @@ export const deleteChat: AppRouteHandler<DeleteChatRoute> = async (c) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = getPrisma(c.env.DB);
+  const db = drizzle(env.chatpet_d1, { schema });
 
-  const existingChat = await prisma.chat.findFirst({
-    where: { id, userId: session.userId },
-    include: {
+  const existingChat = await db.query.chatsTable.findFirst({
+    where: and(
+      eq(schema.chatsTable.id, id),
+      eq(schema.chatsTable.userId, session.id)
+    ),
+    with: {
       histories: {
-        include: {
+        with: {
           image: true,
         },
       },
@@ -511,7 +530,7 @@ export const deleteChat: AppRouteHandler<DeleteChatRoute> = async (c) => {
     }
   }
 
-  await prisma.chat.delete({ where: { id } });
+  await db.delete(schema.chatsTable).where(eq(schema.chatsTable.id, id));
   return c.body(null, HttpStatusCodes.NO_CONTENT);
 };
 
@@ -531,13 +550,18 @@ export const addMessage = async (c: any) => {
   if (!session?.userId) {
     return c.json({ message: "Unauthorized" }, HttpStatusCodes.UNAUTHORIZED);
   }
-  const prisma = getPrisma(c.env.DB);
+  const db = drizzle(env.chatpet_d1, { schema });
 
-  const existingChat = await prisma.chat.findFirst({
-    where: { id, userId: session.userId },
-    include: {
+  const existingChat = await db.query.chatsTable.findFirst({
+    where: and(
+      eq(schema.chatsTable.id, id),
+      eq(schema.chatsTable.userId, session.id)
+    ),
+    with: {
       histories: {
-        include: { image: true },
+        with: {
+          image: true,
+        },
       },
     },
   });
@@ -653,50 +677,47 @@ export const addMessage = async (c: any) => {
 
           const key = data.key;
 
-          await prisma.message.create({
-            data: {
-              id: uuidv4(),
+          const messageArr = await db
+            .insert(schema.messagesTable)
+            .values({
               chatId: id,
-              content: content,
+              content,
               role: "USER",
-              image: {
-                create: {
-                  id: uuidv4(),
-                  url: data.ufsUrl,
-                  key: key,
-                  expirationTime: "",
-                  mimeType: image.type,
-                  name: data.name || image.name,
-                  sizeBytes: image.size.toString(),
-                  displayName: image.displayName ?? "",
-                  fileUri: image.uri ?? "",
-                },
-              },
-            },
+            })
+            .returning();
+
+          const message = messageArr[0];
+
+          await db.insert(schema.imagesTable).values({
+            url: data.ufsUrl,
+            key: key,
+            name: data.name,
+            mimeType: image.mimeType ?? "",
+            expirationTime: "",
+            sizeBytes: image.sizeBytes ?? "",
+            displayName: image.displayName ?? "",
+            fileUri: image.uri ?? "",
+            messageId: message.id,
           });
         } else {
-          await prisma.message.create({
-            data: {
-              id: uuidv4(),
-              chatId: id,
-              content: content,
-              role: "USER",
-            },
+          await db.insert(schema.messagesTable).values({
+            chatId: id,
+            content,
+            role: "USER",
           });
         }
 
-        await prisma.message.create({
-          data: {
-            id: uuidv4(),
-            chatId: id,
-            content: fullResponse,
-            role: "MODEL",
-          },
+        await db.insert(schema.messagesTable).values({
+          id: uuidv4(),
+          chatId: id,
+          content: fullResponse,
+          role: "MODEL",
         });
-        await prisma.chat.update({
-          where: { id },
-          data: { updateAt: new Date() },
-        });
+
+        await db
+          .update(schema.chatsTable)
+          .set({ updateAt: new Date() })
+          .where(eq(schema.chatsTable.id, id));
       } catch (error) {
         console.error("Failed to update chat/messages in database:", error);
       }
@@ -711,18 +732,18 @@ export const addMessage = async (c: any) => {
       ],
     };
 
-    await prisma.message.create({
-      data: {
-        id: uuidv4(),
-        chatId: id,
-        content: errorMessage.parts[0].text,
-        role: "MODEL",
-      },
+    await db.insert(schema.messagesTable).values({
+      id: uuidv4(),
+      chatId: id,
+      content: errorMessage.parts[0].text,
+      role: "MODEL",
     });
-    const updatedChat = await prisma.chat.update({
-      where: { id },
-      data: { updateAt: new Date() },
-    });
+
+    const updatedChat = await db
+      .update(schema.chatsTable)
+      .set({ updateAt: new Date() })
+      .where(eq(schema.chatsTable.id, id));
+
     return c.json(updatedChat, HttpStatusCodes.OK);
   }
 };

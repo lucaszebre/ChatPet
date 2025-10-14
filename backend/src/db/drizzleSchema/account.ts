@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { usersTable } from "./user";
+import { users } from "./auth";
 
 export const accountsTable = sqliteTable("account", {
   id: text("id").primaryKey(),
@@ -8,7 +8,7 @@ export const accountsTable = sqliteTable("account", {
   providerId: text("providerId").notNull(),
   userId: text("userId")
     .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   accessToken: text("accessToken"),
   refreshToken: text("refreshToken"),
   idToken: text("idToken"),
@@ -25,8 +25,8 @@ export const accountsTable = sqliteTable("account", {
 });
 
 export const accountsRelations = relations(accountsTable, ({ one }) => ({
-  user: one(usersTable, {
+  user: one(users, {
     fields: [accountsTable.userId],
-    references: [usersTable.id],
+    references: [users.id],
   }),
 }));

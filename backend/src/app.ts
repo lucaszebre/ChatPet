@@ -3,7 +3,7 @@ import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import configureOpenAPI from "./lib/configure-open-api.js";
 import createApp from "./lib/create-app.js";
-import { auth } from "./routes/auth/auth.js";
+import { createAuth } from "./routes/auth/auth.js";
 import { chat } from "./routes/chat/chat.index.js";
 import { user } from "./routes/user/user.index.js";
 
@@ -75,6 +75,14 @@ app.use(
 );
 
 app.use("*", async (c, next) => {
+  const auth = createAuth(c.env, (c.req.raw as any).cf || {});
+  c.set("auth", auth);
+  await next();
+});
+
+app.use("*", async (c, next) => {
+  const auth = c.get("auth");
+
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) {
@@ -89,6 +97,8 @@ app.use("*", async (c, next) => {
 });
 
 app.use("/api/private/*", async (c, next) => {
+  const auth = c.get("auth");
+
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) {
@@ -117,8 +127,10 @@ app.get("/session", async (c) => {
   });
 });
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
-
+app.all("/api/auth/*", async (c) => {
+  const auth = c.get("auth");
+  return auth.handler(c.req.raw);
+});
 configureOpenAPI(app);
 
 const routes = [user, chat] as const;

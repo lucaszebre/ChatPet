@@ -8,14 +8,18 @@
     "port": 5000,
     "local_protocol": "http"
   },
+
   "d1_databases": [
     {
       "binding": "chatpet_d1",
-      "database_name": "chatpet-d1",
-      "database_id": "d612319a-51e0-45bb-a51f-63a6be97f92b"
+      "database_name": "DB",
+      "database_id": "d612319a-51e0-45bb-a51f-63a6be97f92b",
+      "migrations_dir": "drizzle"
     }
   ],
   "vars": {
+    "TRUSTED_ORIGIN": "http://localhost:5000",
+
     "HOST": "localhost",
     "SERVER_PORT": "5000",
     "LOG_LEVEL": "debug",
@@ -25,8 +29,7 @@
     "logs": {
       "enabled": false,
       "head_sampling_rate": 1,
-      "invocation_logs": true,
-      "persist": true
+      "invocation_logs": true
     }
   }
 }

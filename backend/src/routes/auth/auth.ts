@@ -1,26 +1,68 @@
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { withCloudflare } from "better-auth-cloudflare";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { jwt } from "better-auth/plugins";
-import { getPrisma } from "../../lib/db";
-const prisma = getPrisma(process.env.DB as string);
-export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: "sqlite",
-  }),
-  plugins: [jwt()],
-  socialProviders: {
-    github: {
-      clientId: process.env.AUTH_GITHUB_ID as string,
-      clientSecret: process.env.AUTH_GITHUB_SECRET as string,
-    },
-    google: {
-      clientId: process.env.AUTH_GOOGLE_ID as string,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
-    },
-  },
-  trustedOrigins: [process.env.TRUSTED_ORIGIN as string],
-  logger: {
-    level: "debug",
-  },
-  debug: true,
-});
+import { drizzle } from "drizzle-orm/d1";
+import * as schema from "../../db/drizzleSchema";
+
+function createAuth(
+  env?: CloudflareBindings,
+  cf?: IncomingRequestCfProperties
+) {
+  // Use actual DB for runtime, empty object for CLI
+  const db = env
+    ? drizzle(env.chatpet_d1, { schema, logger: true })
+    : ({} as any);
+
+  return betterAuth({
+    ...withCloudflare(
+      {
+        cf: cf || {},
+
+        d1: env
+          ? {
+              db,
+              options: {
+                usePlural: true,
+                debugLogs: true,
+              },
+            }
+          : undefined,
+      },
+      {
+        plugins: [jwt()],
+        trustedOrigins: env?.TRUSTED_ORIGIN ? [env.TRUSTED_ORIGIN] : [],
+        logger: {
+          level: "debug",
+        },
+        debug: true,
+        socialProviders: {
+          github: {
+            clientId: env?.AUTH_GITHUB_ID ? env.AUTH_GITHUB_ID : "",
+            clientSecret: env?.AUTH_GITHUB_SECRET ? env.AUTH_GITHUB_SECRET : "",
+          },
+          google: {
+            clientId: env?.AUTH_GOOGLE_ID ? env.AUTH_GOOGLE_ID : "",
+            clientSecret: env?.AUTH_GITHUB_SECRET ? env.AUTH_GOOGLE_SECRET : "",
+          },
+        },
+      }
+    ),
+    // Only add database adapter for CLI schema generation
+    ...(env
+      ? {}
+      : {
+          database: drizzleAdapter({} as D1Database, {
+            provider: "sqlite",
+            usePlural: true,
+            debugLogs: true,
+          }),
+        }),
+  });
+}
+
+// Export for CLI schema generation
+export const auth = createAuth();
+
+// Export for runtime usage
+export { createAuth };

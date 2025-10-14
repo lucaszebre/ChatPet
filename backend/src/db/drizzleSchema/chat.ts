@@ -1,13 +1,13 @@
 import { relations } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { users } from "./auth";
 import { messagesTable } from "./message";
-import { usersTable } from "./user";
 
 export const chatsTable = sqliteTable("chat", {
   id: text("id").primaryKey(),
   userId: text("userId")
     .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
   updateAt: integer("updateAt", { mode: "timestamp" })
     .notNull()
@@ -17,9 +17,9 @@ export const chatsTable = sqliteTable("chat", {
 });
 
 export const chatsRelations = relations(chatsTable, ({ one, many }) => ({
-  user: one(usersTable, {
+  user: one(users, {
     fields: [chatsTable.userId],
-    references: [usersTable.id],
+    references: [users.id],
   }),
   histories: many(messagesTable),
 }));
