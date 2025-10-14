@@ -499,7 +499,7 @@ export const deleteChat: AppRouteHandler<DeleteChatRoute> = async (c) => {
   const existingChat = await db.query.chatsTable.findFirst({
     where: and(
       eq(schema.chatsTable.id, id),
-      eq(schema.chatsTable.userId, session.id)
+      eq(schema.chatsTable.userId, session.userId)
     ),
     with: {
       histories: {
@@ -555,7 +555,7 @@ export const addMessage = async (c: any) => {
   const existingChat = await db.query.chatsTable.findFirst({
     where: and(
       eq(schema.chatsTable.id, id),
-      eq(schema.chatsTable.userId, session.id)
+      eq(schema.chatsTable.userId, session.userId)
     ),
     with: {
       histories: {
