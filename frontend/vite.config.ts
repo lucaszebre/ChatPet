@@ -1,3 +1,4 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import mdx from "@mdx-js/rollup";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react-swc";
@@ -7,7 +8,15 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vite.dev/config/
 export default defineConfig({
+  // environments: {
+  //   chatpet: {
+  //     define: {
+
+  //     },
+  //   },
+  // },
   plugins: [
+    cloudflare(),
     react(),
     tailwindcss(),
     {

@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "deploy:pages": "npm run build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
@@ -54,6 +55,7 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.13.13",
     "@eslint/js": "^9.33.0",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.10",
@@ -66,7 +68,8 @@
     "tw-animate-css": "^1.3.7",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2",
-    "vite-plugin-node-polyfills": "^0.24.0"
+    "vite": "^7.1.10",
+    "vite-plugin-node-polyfills": "^0.24.0",
+    "wrangler": "^4.43.0"
   }
 }
