@@ -37,6 +37,7 @@ function createAuth(
         },
         debug: true,
         advanced: {
+          useSecureCookies: false,
           crossSubDomainCookies: {
             enabled: true,
             domain: env?.TRUSTED_ORIGIN ? env.TRUSTED_ORIGIN : "",
