@@ -11,7 +11,7 @@ export default defineConfig({
   environments: {
     chatpet: {
       define: {
-        VITE_BACKEND_BASE_URL: "https://backend-chatpet.yakirisk.workers.dev/",
+        VITE_BACKEND_BASE_URL: process.env.VITE_BACKEND_BASE_URL,
       },
     },
   },
