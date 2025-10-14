@@ -18,12 +18,9 @@
     }
   ],
   "vars": {
-    "TRUSTED_ORIGIN": "http://localhost:5000",
-
     "HOST": "localhost",
     "SERVER_PORT": "5000",
-    "LOG_LEVEL": "debug",
-    "VITE_BACKEND_BASE_URL": "http://localhost:5000"
+    "LOG_LEVEL": "debug"
   },
   "observability": {
     "logs": {

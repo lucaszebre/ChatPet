@@ -36,6 +36,12 @@ function createAuth(
           level: "debug",
         },
         debug: true,
+        advanced: {
+          crossSubDomainCookies: {
+            enabled: true,
+            domain: env?.TRUSTED_ORIGIN ? env.TRUSTED_ORIGIN : "",
+          },
+        },
         socialProviders: {
           github: {
             clientId: env?.AUTH_GITHUB_ID ? env.AUTH_GITHUB_ID : "",
