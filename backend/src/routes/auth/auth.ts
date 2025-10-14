@@ -40,10 +40,16 @@ function createAuth(
           github: {
             clientId: env?.AUTH_GITHUB_ID ? env.AUTH_GITHUB_ID : "",
             clientSecret: env?.AUTH_GITHUB_SECRET ? env.AUTH_GITHUB_SECRET : "",
+            redirectURI: env?.AUTH_URL
+              ? `${env.AUTH_URL}/api/auth/callback/github`
+              : "",
           },
           google: {
             clientId: env?.AUTH_GOOGLE_ID ? env.AUTH_GOOGLE_ID : "",
             clientSecret: env?.AUTH_GITHUB_SECRET ? env.AUTH_GOOGLE_SECRET : "",
+            redirectURI: env?.AUTH_URL
+              ? `${env.AUTH_URL}/api/auth/callback/google`
+              : "",
           },
         },
       }
