@@ -8,13 +8,13 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vite.dev/config/
 export default defineConfig({
-  // environments: {
-  //   chatpet: {
-  //     define: {
-
-  //     },
-  //   },
-  // },
+  environments: {
+    chatpet: {
+      define: {
+        VITE_BACKEND_BASE_URL: "https://backend-chatpet.yakirisk.workers.dev/",
+      },
+    },
+  },
   plugins: [
     cloudflare(),
     react(),
