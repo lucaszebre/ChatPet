@@ -59,26 +59,28 @@ export const SidebarThread = ({
             <Icons.spinner className="absolute z-10 right-1 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
           )}
         </Link>
-        <AlertDialog
-          title={t("sidebar.deleteThread.title", {
-            threadName: item.name,
-          })}
-          description={t("sidebar.deleteThread.description")}
-          confirmText={t("sidebar.deleteThread.confirm")}
-          cancelText={t("sidebar.deleteThread.cancel")}
-          showCancel
-          showConfirm
-          trigger={
-            <Button
-              size="sm"
-              variant="ghost"
-              className="absolute z-10 right-1 cursor-pointer h-6 w-6 p-0 text-muted-foreground hover:text-destructive dark:hover:text-red-400"
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
-          }
-          onConfirm={handleDeleteThread}
-        />
+        {!isLoading && (
+          <AlertDialog
+            title={t("sidebar.deleteThread.title", {
+              threadName: item.name,
+            })}
+            description={t("sidebar.deleteThread.description")}
+            confirmText={t("sidebar.deleteThread.confirm")}
+            cancelText={t("sidebar.deleteThread.cancel")}
+            showCancel
+            showConfirm
+            trigger={
+              <Button
+                size="sm"
+                variant="ghost"
+                className="absolute z-10 right-1 cursor-pointer h-6 w-6 p-0 text-muted-foreground hover:text-destructive dark:hover:text-red-400"
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            }
+            onConfirm={handleDeleteThread}
+          />
+        )}
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
