@@ -256,6 +256,7 @@ export const createChat = async (c: any) => {
         const messageArr = await db
           .insert(schema.messagesTable)
           .values({
+            id: uuidv4(),
             chatId: id,
             content: messageContent,
             role: "USER",
@@ -265,6 +266,8 @@ export const createChat = async (c: any) => {
         const message = messageArr[0];
 
         await db.insert(schema.imagesTable).values({
+          id: uuidv4(),
+
           url: data.ufsUrl,
           key: key,
           name: data.name,
@@ -534,6 +537,8 @@ export const addMessage = async (c: any) => {
           const messageArr = await db
             .insert(schema.messagesTable)
             .values({
+              id: uuidv4(),
+
               chatId: id,
               content,
               role: "USER",
@@ -543,6 +548,8 @@ export const addMessage = async (c: any) => {
           const message = messageArr[0];
 
           await db.insert(schema.imagesTable).values({
+            id: uuidv4(),
+
             url: data.ufsUrl,
             key: key,
             name: data.name,
@@ -555,6 +562,8 @@ export const addMessage = async (c: any) => {
           });
         } else {
           await db.insert(schema.messagesTable).values({
+            id: uuidv4(),
+
             chatId: id,
             content,
             role: "USER",
