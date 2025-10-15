@@ -13,6 +13,7 @@ const Preview = ({ children }: { children: React.ReactNode }) => {
       <div className="flex flex-col w-full max-w-[30%] items-center gap-4 justify-start ">
         <div className="w-full flex justify-start">
           <Button
+            className="cursor-pointer"
             variant={"outline"}
             onClick={() => {
               navigate(-1);

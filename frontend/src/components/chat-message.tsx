@@ -153,7 +153,7 @@ export const ChatMessage = memo(
                         variant="ghost"
                         size="icon"
                         className={cn(
-                          "h-8 w-8 hover:bg-accent transition-all duration-200",
+                          "h-8 w-8 hover:bg-accent  cursor-pointer transition-all duration-200",
                           isCopied && "bg-green-100 hover:bg-green-200"
                         )}
                         onClick={handleCopy}
@@ -286,7 +286,7 @@ export const ChatMessage = memo(
                       variant="ghost"
                       size="icon"
                       className={cn(
-                        "h-8 w-8 hover:bg-accent transition-all duration-200",
+                        "h-8 w-8 hover:bg-accent cursor-pointer transition-all duration-200",
                         isCopied && "bg-green-100 hover:bg-green-200"
                       )}
                       onClick={handleCopy}

@@ -19,7 +19,7 @@ export const NotFound = () => {
           <p className="text-gray-500 max-w-md mx-auto">
             {t("PageNotFoundDescription")}
           </p>
-          <Button asChild className="mt-6" variant="default">
+          <Button asChild className="mt-6 cursor-pointer" variant="default">
             <Link to="/">
               <MoveLeft className="mr-2 h-4 w-4" />
               {t("BackToDashboard")}
