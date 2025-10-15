@@ -3,6 +3,10 @@ import { ChatMessage } from "@/components/chat-message";
 import Dialog from "@/components/implementation/dialog";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
+import {
+  SYSTEM_INSTRUCTION_ENGLISH,
+  SYSTEM_INSTRUCTION_FRENCH,
+} from "@/constants/system-prompts";
 import type { ChatType } from "@/types";
 import "@mdxeditor/editor/style.css";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -42,15 +46,20 @@ export const Chat = () => {
   const [search, setSearch] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [editable, setEditable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [threads, saveThreads] = useLocalStorage<ChatType[]>("threads", []);
   const { id } = useParams<{ id: string }>();
 
   const editor = useEditor({
     extensions: [StarterKit],
-    editable,
+    content:
+      t("common:language") === "en"
+        ? SYSTEM_INSTRUCTION_ENGLISH
+        : SYSTEM_INSTRUCTION_FRENCH,
   });
+
+  const [editable, setEditable] = useState(editor.isEditable);
+
   useEffect(() => {
     const scrollToBottom = () => {
       if (messagesEndRef.current) {
@@ -375,10 +384,10 @@ export const Chat = () => {
               className="cursor-pointer"
               onClick={() => {
                 editor.setEditable(!editor.isEditable, true);
-                setEditable(!editor.isEditable);
+                setEditable((prev) => !prev);
               }}
             >
-              {!editable ? t("chat:disableEdit") : t("chat:enableEdit")}
+              {editable ? t("chat:disableEdit") : t("chat:enableEdit")}
             </Button>
             <DialogClose>
               <Button
