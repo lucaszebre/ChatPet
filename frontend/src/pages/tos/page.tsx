@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 export const TosPage = () => {
   const { t } = useTranslation("common");
 
-  if (t("language") == "en") {
+  if (t("lang") === "EN") {
     return (
       <Preview>
         <Tos />

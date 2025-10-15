@@ -4,9 +4,9 @@ import PrivacyPolicy from "@/markdown/privacy-policy.mdx";
 import { useTranslation } from "react-i18next";
 
 export const PrivacyPolicyPage = () => {
-  const { t } = useTranslation("language");
+  const { t } = useTranslation("common");
 
-  if (t("language") == "en") {
+  if (t("lang") === "EN") {
     return (
       <Preview>
         <PrivacyPolicy />
