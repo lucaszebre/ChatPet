@@ -42,14 +42,14 @@ export const Chat = () => {
   const [search, setSearch] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [editable, setEditable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [threads, saveThreads] = useLocalStorage<ChatType[]>("threads", []);
-  const [editable, setEditable] = useState(false);
   const { id } = useParams<{ id: string }>();
 
   const editor = useEditor({
     extensions: [StarterKit],
-    editable, // define your extension array
+    editable,
   });
   useEffect(() => {
     const scrollToBottom = () => {
@@ -81,7 +81,6 @@ export const Chat = () => {
     setUploadedFile(file);
     setIsPopoverOpen(false);
   };
-  console.log(t("common:lang"), "lang");
   const sendMessage = useCallback(
     async (
       content: { message: string; image?: File },
@@ -375,10 +374,11 @@ export const Chat = () => {
             <Button
               className="cursor-pointer"
               onClick={() => {
-                setEditable((prev) => !prev);
+                editor.setEditable(!editor.isEditable, true);
+                setEditable(!editor.isEditable);
               }}
             >
-              {editable ? t("chat:disableEdit") : t("chat:enableEdit")}
+              {!editable ? t("chat:disableEdit") : t("chat:enableEdit")}
             </Button>
             <DialogClose>
               <Button
