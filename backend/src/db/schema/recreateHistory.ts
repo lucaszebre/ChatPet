@@ -1,4 +1,6 @@
-import type { $Enums, Image } from "../../generated/prisma/index.js";
+import type { imagesTable, messagesTable } from "../drizzleSchema";
+
+type Image = typeof imagesTable.$inferSelect;
 
 type HistoryItem = {
   role: "user" | "model";
@@ -14,7 +16,7 @@ type HistoryItem = {
 type Message = {
   id: string;
   content: string;
-  role: $Enums.role;
+  role: (typeof messagesTable.$inferSelect)["role"];
   chatId: string;
   createdAt: Date;
   image?: Image | null;
