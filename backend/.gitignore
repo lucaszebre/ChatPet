@@ -30,3 +30,6 @@ lerna-debug.log*
 .DS_Store
 
 /src/generated/prisma
+
+# wrangler local state
+.wrangler/
